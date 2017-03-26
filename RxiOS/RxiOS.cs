@@ -12,11 +12,6 @@ namespace UIKit.Reactive
 {
     public static class RxUILabel
     {
-        public static Reactive<UILabel> Rx(this UILabel label)
-        {
-            return new Reactive<UILabel>(label);
-        }
-
         public static UIBindingObserver<UILabel, string> Text(this Reactive<UILabel> rx)
         {
             return new UIBindingObserver<UILabel, string>(rx.Parent, (label, s) => label.Text = s);
@@ -30,10 +25,6 @@ namespace UIKit.Reactive
 
     public static class RxUIButton
     {
-        public static Reactive<UIButton> Rx(this UIButton button)
-        {
-            return new Reactive<UIButton>(button);
-        }
 
         public static UIBindingObserver<T, string> Title<T>(this Reactive<T> rx, UIControlState state) where T: UIButton
         {
@@ -108,12 +99,6 @@ namespace UIKit.Reactive
 
     public static class RxUITextField
     {
-
-        public static Reactive<UITextField> Rx(this UITextField textField)
-        {
-            return new Reactive<UITextField>(textField);
-        }
-
         public static ControlProperty<string> Text<T>(this Reactive<T> rx) where T : UITextField
         {
             return rx.Value();
@@ -127,6 +112,48 @@ namespace UIKit.Reactive
                     textField.Text = text;
                 }
             });
+        }
+    }
+
+    public static class RxUIApplication
+    {
+        public static UIBindingObserver<T, bool> NetworkActivityIndicatorVisible<T>(this Reactive<T> rx)
+            where T : UIApplication
+        {
+            return new UIBindingObserver<T, bool>(rx.Parent, (application, b) => application.NetworkActivityIndicatorVisible = b);
+        }
+    }
+
+    public static class RxUIView
+    {
+        public static UIBindingObserver<T, bool> Hidden<T>(this Reactive<T> rx) where T: UIView
+        {
+            return new UIBindingObserver<T, bool>(rx.Parent, (view, b) => view.Hidden = b);
+        }
+
+        public static UIBindingObserver<T, float> Alpha<T>(this Reactive<T> rx) where T: UIView
+        {
+            return new UIBindingObserver<T, float>(rx.Parent, (view, f) => view.Alpha = f);
+        }
+
+
+    }
+
+    public static class IObservableExtensions
+    {
+        public static IDisposable BindTo<T>(this IObservable<T> observable, IObserver<T> observer)
+        {
+            return observable.Subscribe(observer);
+        }
+
+        public static IObservable<Tuple<T, G>> CombineLatest<T, G>(this IObservable<T> obs1, IObservable<G> obs2)
+        {
+            return obs1.CombineLatest(obs2, Tuple.Create);
+        }
+
+        public static IDisposable SubscribeLatest<T, G>(this IObservable<T> obs1, IObservable<G> obs2, Action<T, G> sub)
+        {
+            return obs1.CombineLatest(obs2).Subscribe(tuple => sub(tuple.Item1, tuple.Item2));
         }
     }
 

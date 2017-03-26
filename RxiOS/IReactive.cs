@@ -1,9 +1,16 @@
 ﻿
 namespace UIKit.Reactive
 {
-    public interface IReactive<TParent>
+    public static class RxReactive
     {
-        Reactive<TParent> Rx(TParent parent);
+        public static Reactive<TParent> Rx<TParent>()
+        {
+            return Rx<TParent>(default(TParent));
+        }
 
+        public static Reactive<TParent> Rx<TParent>(this TParent reactiveObject)
+        {
+            return new Reactive<TParent>(reactiveObject);
+        }
     }
 }
