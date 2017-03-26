@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace RxiOS
+namespace UIKit.Reactive
 {
     public class Reactive<TParent>
     {

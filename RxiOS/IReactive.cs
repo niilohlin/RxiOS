@@ -1,5 +1,5 @@
 ﻿
-namespace RxiOS
+namespace UIKit.Reactive
 {
     public interface IReactive<TParent>
     {
