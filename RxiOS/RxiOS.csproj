@@ -58,10 +58,14 @@
     <Compile Include="CocoaUnits\ControlProperty.cs" />
     <Compile Include="CocoaUnits\UIBindingObserver.cs" />
     <Compile Include="Common\ControlTarget.cs" />
+    <Compile Include="Common\IRxTableViewDataSource.cs" />
+    <Compile Include="Common\ISectionedViewDatasource.cs" />
+    <Compile Include="DataSources\RxTableViewReactiveArrayDataSource.cs" />
     <Compile Include="IReactive.cs" />
     <Compile Include="Reactive.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RxiOS.cs" />
+    <Compile Include="RxUITableView.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

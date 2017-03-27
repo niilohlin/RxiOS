@@ -7,6 +7,7 @@ using CoreFoundation;
 using Foundation;
 using UIKit.Reactive.CocoaUnits;
 using UIKit.Reactive.Common;
+using UIKit;t
 
 namespace UIKit.Reactive
 {
@@ -135,8 +136,33 @@ namespace UIKit.Reactive
         {
             return new UIBindingObserver<T, float>(rx.Parent, (view, f) => view.Alpha = f);
         }
+    }
 
+    public static class RxUIActivityIndicatorView
+    {
+        public static UIBindingObserver<T, bool> Animating<T>(this Reactive<T> rx) where T : UIActivityIndicatorView
+        {
+            return new UIBindingObserver<T, bool>(rx.Parent, (activity, b) =>
+            {
+                if (b)
+                {
+                    activity.StartAnimating();
+                }
+                else
+                {
+                    activity.StopAnimating();
+                }
+            });
+        }
+    }
 
+    public static class RxUISegmentedControl
+    {
+        public static ControlProperty<nint> Value<T>(this Reactive<T> rx) where T : UISegmentedControl
+        {
+            return RxUIControl.Value(rx.Parent, seg => seg.SelectedSegment,
+                (seg, segIndex) => seg.SelectedSegment = segIndex);
+        }
     }
 
     public static class IObservableExtensions
@@ -154,6 +180,21 @@ namespace UIKit.Reactive
         public static IDisposable SubscribeLatest<T, G>(this IObservable<T> obs1, IObservable<G> obs2, Action<T, G> sub)
         {
             return obs1.CombineLatest(obs2).Subscribe(tuple => sub(tuple.Item1, tuple.Item2));
+        }
+
+        public static IObservable<T> SubscribeOnMain<T>(this IObservable<T> observable)
+        {
+            return Observable.Create<T>(observer =>
+            {
+                var a = new NSObject();
+                return observable.Subscribe(
+                    next => a.InvokeOnMainThread(() => observer.OnNext(next)) ,
+                    exception => a.InvokeOnMainThread(() => observer.OnError(exception)) ,
+                    () => a.InvokeOnMainThread(observer.OnCompleted)
+                );
+            });
+
+
         }
     }
 

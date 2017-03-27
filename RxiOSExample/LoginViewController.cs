@@ -1,4 +1,8 @@
-﻿using System.Reactive.Disposables;
+﻿using System;
+using System.Diagnostics;
+using System.Reactive;
+using System.Reactive.Concurrency;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using CoreGraphics;
 using UIKit;
@@ -33,12 +37,41 @@ namespace RxiOSExample
             _passwordTextField.Rx().Text().BindTo(_viewModel.Password).DisposedBy(_compositeDisposable);
             _viewModel.LoginButtonEnabled.BindTo(_loginButton.Rx().Enabled()).DisposedBy(_compositeDisposable);
 
+
+            var loginObserver = Observer.Create(
+                (Unit n) => { }, 
+                () =>
+                {
+                    Debug.Print("completed");
+                });
+            _loginButton.Rx().Tap().SelectMany(b =>
+                {
+                    return _viewModel.Login().Catch((Exception e) =>
+                    {
+                        ShowError(e.Message);
+                        return Observable.Never<Unit>();
+                    });
+
+                })
+                .Subscribe(loginObserver)
+                .DisposedBy(_compositeDisposable);
+
+
+
             View.AddSubview(_usernameTextField);
             View.AddSubview(_passwordTextField);
             View.AddSubview(_loginButton);
             View.BackgroundColor = UIColor.White;
-
         }
-        
+
+        private void ShowError(string message)
+        {
+            InvokeOnMainThread(() =>
+            {
+                var alertController = UIAlertController.Create("Error", message, UIAlertControllerStyle.Alert);
+                alertController.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, null));
+                PresentViewController(alertController, true, null);
+            });
+        }
     }
 }
