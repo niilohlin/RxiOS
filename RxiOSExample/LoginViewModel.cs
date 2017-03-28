@@ -20,8 +20,9 @@ namespace RxiOSExample
 
         public LoginViewModel()
         {
-            LoginButtonEnabled = Username.CombineLatest(Password,
-                (username, password) => username != "" && password != "");
+            LoginButtonEnabled = Username
+                .CombineLatest(Password, (username, password) => username != "" && password != "")
+                .CombineLatest(ActivityIndicatorViewShowing, (enabled, showing) => enabled && !showing);
         }
 
         public IObservable<Unit> Login()
@@ -39,7 +40,7 @@ namespace RxiOSExample
                 }
                 ActivityIndicatorViewShowing.OnNext(false);
                 return Disposable.Empty;
-            }).Delay(TimeSpan.FromSeconds(2));
+            }).DelaySubscription(TimeSpan.FromSeconds(2));
 
         }
     }

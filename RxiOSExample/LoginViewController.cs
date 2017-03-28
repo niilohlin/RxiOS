@@ -16,6 +16,7 @@ namespace RxiOSExample
         private UITextField _passwordTextField;
         private UIButton _loginButton;
         private LoginViewModel _viewModel;
+        private UIActivityIndicatorView _activityIndicatorView;
         private readonly CompositeDisposable _compositeDisposable = new CompositeDisposable();
 
 
@@ -38,8 +39,16 @@ namespace RxiOSExample
             _loginButton.SetTitleColor(UIColor.LightGray, UIControlState.Disabled);
             _loginButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
 
+            _activityIndicatorView =
+                new UIActivityIndicatorView
+                {
+                    TintColor = UIColor.Black,
+                    ActivityIndicatorViewStyle = UIActivityIndicatorViewStyle.Gray
+                };
+
             AddBindings();
 
+            View.AddSubview(_activityIndicatorView);
             View.AddSubview(_usernameTextField);
             View.AddSubview(_passwordTextField);
             View.AddSubview(_loginButton);
@@ -59,6 +68,7 @@ namespace RxiOSExample
             _usernameTextField.Frame = new CGRect(View.Frame.Width / 2 - width / 2, 200, width, height);
             _passwordTextField.Frame = new CGRect(_usernameTextField.Frame.X, _usernameTextField.Frame.Bottom + 8, width, height);
             _loginButton.Frame = new CGRect(_usernameTextField.Frame.X, _passwordTextField.Frame.Bottom + 8, width, height);
+            _activityIndicatorView.Frame = new CGRect(_loginButton.Frame.GetMidX() - 10, _loginButton.Frame.Bottom + 8, 20, 20);
         }
 
         private void AddBindings()
@@ -67,6 +77,7 @@ namespace RxiOSExample
             _usernameTextField.Rx().Text().BindTo(_viewModel.Username).DisposedBy(_compositeDisposable);
             _passwordTextField.Rx().Text().BindTo(_viewModel.Password).DisposedBy(_compositeDisposable);
             _viewModel.LoginButtonEnabled.BindTo(_loginButton.Rx().Enabled()).DisposedBy(_compositeDisposable);
+            _viewModel.ActivityIndicatorViewShowing.BindTo(_activityIndicatorView.Rx().Animating()).DisposedBy(_compositeDisposable);
 
             var loginObserver = Observer.Create(
                 (Unit n) => { Debug.Print("next("); }, 

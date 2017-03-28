@@ -33,13 +33,13 @@ namespace UIKit.Reactive
 
         public static ControlEvent<UIButton> Tap(this Reactive<UIButton> rx)
         {
-            return rx.CreateControlEvent(UIControlEvent.TouchUpInside);
+            return rx.ControlEvent(UIControlEvent.TouchUpInside);
         }
     }
 
     public static class RxUIControl
     {
-        public static ControlEvent<T> CreateControlEvent<T>(this Reactive<T> rx, UIControlEvent controlEvent) where T: UIControl
+        public static ControlEvent<T> ControlEvent<T>(this Reactive<T> rx, UIControlEvent controlEvent) where T: UIControl
         {
             var source = Observable.Create<T>(observer =>
             {
@@ -154,6 +154,28 @@ namespace UIKit.Reactive
             });
         }
     }
+    public static class RxUIRefreshControl
+    {
+        public static UIBindingObserver<T, bool> Refreshing<T>(this Reactive<T> rx) where T : UIRefreshControl
+        {
+            return new UIBindingObserver<T, bool>(rx.Parent, (refresh, b) =>
+            {
+                if (b)
+                {
+                    refresh.BeginRefreshing();
+                }
+                else
+                {
+                    refresh.EndRefreshing();
+                }
+            });
+        }
+
+        public static ControlEvent<T> Refresh<T>(this Reactive<T> rx) where T : UIRefreshControl
+        {
+            return rx.ControlEvent(UIControlEvent.ValueChanged);
+        }
+    }
 
     public static class RxUIViewController
     {
@@ -163,13 +185,13 @@ namespace UIKit.Reactive
         }
     }
 
-    public static class RxUIAlertAction
-    {
-        public static UIBindingObserver<T, bool> Enabled<T>(this Reactive<T> rx) where T : UIAlertAction
-        {
-            return new UIBindingObserver<T, bool>(rx.Parent, (aa, b) => aa.Enabled = b);
-        }
-    }
+    //public static class RxUIAlertAction
+    //{
+        //public static UIBindingObserver<T, bool> Enabled<T>(this Reactive<T> rx) where T : UIAlertAction
+        //{ 
+        //return new UIBindingObserver<T, bool>(rx.Parent, (aa, b) => aa.Enabled = b);
+        //}
+    //}
 
     public static class RxUISegmentedControl
     {
