@@ -14,7 +14,7 @@ namespace UIKit.Reactive.CocoaUnits
 
         public ControlProperty(IObservable<TProperty> values, IObserver<TProperty> valueSink)
         {
-            Values = values;//.SubscribeOn(Scheduler.Default);
+            Values = values.SubscribeOnMain();
             ValueSink = valueSink.AsObserver();
         }
 

@@ -29,7 +29,7 @@ namespace RxiOSExample
             ActivityIndicatorViewShowing.OnNext(true);
             return Observable.Create<Unit>(observer =>
             {
-                if (Username.Value == "username" && Password.Value == "password")
+                if (Username.Value == "Asdf" && Password.Value == "fdsa")
                 {
                     observer.OnCompleted();
                 }

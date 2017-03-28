@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using NUnit.Framework;
 using UIKit;
 using UIKit.Reactive;
@@ -100,6 +101,21 @@ namespace RxiOSTests
 
             compositeDisposable.Dispose();
         }
+
+        [Test]
+        public void TestCatch()
+        {
+            var integer = new BehaviorSubject<int>(1);
+            var intObservable = integer.Catch((Exception e) => Observable.Return<int>(-1));
+            var sub = intObservable.Subscribe(next => Debug.Print("next " + next) , 
+                (Exception e) => Debug.Print("error" + e),
+                () => Debug.Print("complete")
+            );
+            integer.OnNext(5);
+            integer.OnNext(4);
+            integer.OnCompleted();
+        }
+
 
             
     }

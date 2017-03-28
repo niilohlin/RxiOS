@@ -10,7 +10,7 @@ namespace UIKit.Reactive.CocoaUnits
         private readonly IObservable<TProperty> _events;
         public ControlEvent(IObservable<TProperty> events)
         {
-            _events = events; //.SubscribeOn(Scheduler.Default);
+            _events = events.SubscribeOnMain();
         }
         public IDisposable Subscribe(IObserver<TProperty> observer)
         {

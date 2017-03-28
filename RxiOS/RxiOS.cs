@@ -7,7 +7,6 @@ using CoreFoundation;
 using Foundation;
 using UIKit.Reactive.CocoaUnits;
 using UIKit.Reactive.Common;
-using UIKit;t
 
 namespace UIKit.Reactive
 {
@@ -156,9 +155,30 @@ namespace UIKit.Reactive
         }
     }
 
+    public static class RxUIViewController
+    {
+        public static UIBindingObserver<T, string> Title<T>(this Reactive<T> rx) where T : UIViewController
+        {
+            return new UIBindingObserver<T, string>(rx.Parent, (vc, s) => vc.Title = s);
+        }
+    }
+
+    public static class RxUIAlertAction
+    {
+        public static UIBindingObserver<T, bool> Enabled<T>(this Reactive<T> rx) where T : UIAlertAction
+        {
+            return new UIBindingObserver<T, bool>(rx.Parent, (aa, b) => aa.Enabled = b);
+        }
+    }
+
     public static class RxUISegmentedControl
     {
-        public static ControlProperty<nint> Value<T>(this Reactive<T> rx) where T : UISegmentedControl
+        public static ControlProperty<nint> SelectedSegment<T>(this Reactive<T> rx) where T : UISegmentedControl
+        {
+            return rx.SegValue();
+        }
+
+        public static ControlProperty<nint> SegValue<T>(this Reactive<T> rx) where T : UISegmentedControl
         {
             return RxUIControl.Value(rx.Parent, seg => seg.SelectedSegment,
                 (seg, segIndex) => seg.SelectedSegment = segIndex);
@@ -186,11 +206,10 @@ namespace UIKit.Reactive
         {
             return Observable.Create<T>(observer =>
             {
-                var a = new NSObject();
                 return observable.Subscribe(
-                    next => a.InvokeOnMainThread(() => observer.OnNext(next)) ,
-                    exception => a.InvokeOnMainThread(() => observer.OnError(exception)) ,
-                    () => a.InvokeOnMainThread(observer.OnCompleted)
+                    next => DispatchQueue.MainQueue.DispatchAsync(() => observer.OnNext(next)),
+                    exception => DispatchQueue.MainQueue.DispatchAsync(() => observer.OnError(exception)),
+                    () => DispatchQueue.MainQueue.DispatchAsync(observer.OnCompleted)
                 );
             });
 
