@@ -15,15 +15,18 @@ namespace RxiOSExample
         private UITextField _usernameTextField;
         private UITextField _passwordTextField;
         private UIButton _loginButton;
-        private LoginViewModel _viewModel;
+        private readonly LoginViewModel _viewModel;
         private UIActivityIndicatorView _activityIndicatorView;
         private readonly CompositeDisposable _compositeDisposable = new CompositeDisposable();
 
+        public LoginViewController(LoginViewModel viewModel)
+        {
+            _viewModel = viewModel;
+        }
 
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
-            _viewModel = new LoginViewModel();
             _usernameTextField = new UITextField()
             {
                 BackgroundColor = UIColor.LightGray,
@@ -78,21 +81,11 @@ namespace RxiOSExample
             _passwordTextField.Rx().Text().BindTo(_viewModel.Password).DisposedBy(_compositeDisposable);
             _viewModel.LoginButtonEnabled.BindTo(_loginButton.Rx().Enabled()).DisposedBy(_compositeDisposable);
             _viewModel.ActivityIndicatorViewShowing.BindTo(_activityIndicatorView.Rx().Animating()).DisposedBy(_compositeDisposable);
+            _viewModel.ErrorOccured.SubscribeOnMain().Subscribe(e => ShowError(e.Message)).DisposedBy(_compositeDisposable);
 
-            var loginObserver = Observer.Create(
-                (Unit n) => { Debug.Print("next("); }, 
-                () =>
-                {
-                    Debug.Print("completed");
-                });
-            _loginButton.Rx().Tap().SelectMany(b =>
-                {
-                    return _viewModel.Login().SubscribeOnMain().Catch((Exception e) =>
-                    {
-                        ShowError(e.Message);
-                        return Observable.Never<Unit>();
-                    });
-                })
+            var loginObserver = Observer.Create( (Unit n) => Debug.Print("login succeeded") );
+
+            _loginButton.Rx().Tap().SelectMany(b => _viewModel.Login().SubscribeOnMain())
                 .Subscribe(loginObserver)
                 .DisposedBy(_compositeDisposable);
         }

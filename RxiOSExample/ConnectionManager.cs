@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Reactive;
 using System.Reactive.Disposables;
@@ -8,17 +9,16 @@ namespace RxiOSExample
 {
     public class ConnectionManager
     {
-        public IObservable<HttpResponseMessage> GetGithub()
+        public IObservable<HttpResponseMessage> Login(string username, string password)
         {
-            var client = new HttpClient();
-            return Observable.Create<HttpResponseMessage>(async observer =>
+            return Observable.FromAsync(async observer =>
             {
-                var response = await client.GetAsync("https://api.github.com/");
-                observer.OnNext(response);
-                observer.OnCompleted();
-                return Disposable.Empty;
+                using (var handler = new HttpClientHandler { Credentials = new NetworkCredential(username, password), UseDefaultCredentials = true})
+                using (var client = new HttpClient(handler))
+                {
+                    return await client.GetAsync("https://api.github.com/user/", observer);
+                }
             });
         }
-
     }
 }
