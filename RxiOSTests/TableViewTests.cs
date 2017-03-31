@@ -2,6 +2,7 @@ using System;
 using System.Reactive.Linq;
 using Foundation;
 using NUnit.Framework;
+using NUnit.Framework.Internal;
 using UIKit;
 using UIKit.Reactive;
 
@@ -24,26 +25,21 @@ namespace RxiOSTests
             }));
 
             var indexPath = NSIndexPath.FromRowSection(0, 0);
-            var cell1 = tableView.Source.GetCell(tableView, indexPath);
-            Assert.True((cell1?.TextLabel?.Text ?? "") == "First Element");
+            Assert.AreEqual(tableView.Source.GetCell(tableView, indexPath).TextLabel.Text,  "First Item");
 
             subscription.Dispose();
         }
 
         [Test]
-        public void Pass()
+        public void BindSequencesOfElementsToTableViewRows_WithCellIdentifier()
         {
             var tableView = new UITableView();
-            var models= new [] {"First", "Second", "Third", "Fourth"};
+            tableView.RegisterClassForCellReuse(typeof(UITableViewCell), nameof(UITableViewCell));
+            var items = Observable.Return(new [] {"First", "Second", "Third", "Fourth"});
 
-            var observable = Observable.Return(models);
-
-            var subscription = tableView.Rx().Items(observable)((tv, row, model) =>
-            {
-                var cell = new UITableViewCell();
-                cell.TextLabel.Text = model;
-                return cell;
-            });
+//Action<int, TElement, TCell> cellInitializer
+            var subscription = items.BindTo(tableView.Rx().Items(nameof(UITableViewCell),
+                (int row, string element, UITableViewCell cell) => cell.TextLabel.Text = element ));
 
             var indexPath = NSIndexPath.FromRowSection(0, 0);
             Assert.AreEqual(tableView.Source.GetCell(tableView, indexPath).TextLabel.Text, "First");
