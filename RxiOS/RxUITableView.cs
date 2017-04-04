@@ -30,6 +30,21 @@ namespace UIKit.Reactive
                 rx.Parent.Source = new _RxTableViewIdentifierSource<TElement, TCell>(cellIdentifier, nextElements, cellInitializer);
             });
         }
+
+        //public static IObserver<IEnumerable<TSection>> Sections<TParent, TSection, TElement>(
+        //    this Reactive<TParent> rx,
+        //    Func<UITableView, int, TSection, string> getHeader,
+        //    Func<UITableView, int, IEnumerable<TElement>> getItems,
+        //    Func<UITableView, int, TElement, UITableViewCell> cellFactory
+        //) where TParent: UITableView
+        //{
+        //    return Observer.Create<IEnumerable<TSection>>(nextSections =>
+        //    {
+        //        rx.Parent.Source = new _RxTableViewSimpleSectionedSource<TSection, TElement>(nextSections, getHeader, getItems, cellFactory);
+        //    });
+            
+        //}
+
     }
 
     internal class _RxTableViewSimpleSource<TElement>: UITableViewSource
@@ -79,4 +94,38 @@ namespace UIKit.Reactive
             return _elements.Count();
         }
     }
+
+    //internal class _RxTableViewSimpleSectionedSource<TSection, TElement> : UITableViewSource
+    //{
+    //    private IEnumerable<TSection> _sections;
+    //    private Func<UITableView, int, TSection, string> _getHeader;
+    //    private Func<UITableView, int,  IEnumerable<TElement>> _getItems;
+    //    private Func<UITableView, int, TElement, UITableViewCell> _cellFactory;
+
+    //    public _RxTableViewSimpleSectionedSource(IEnumerable<TSection> sections, Func<UITableView, int, TSection, string> getHeader, Func<UITableView, int, IEnumerable<TElement>> getItems, Func<UITableView, int, TElement, UITableViewCell> cellFactory)
+    //    {
+    //        _sections = sections;
+    //        _getHeader = getHeader;
+    //        _getItems = getItems;
+    //        _cellFactory = cellFactory;
+    //    }
+
+    //    public override nint NumberOfSections(UITableView tableView)
+    //    {
+    //        return _sections.Count();
+    //    }
+
+    //    public override UITableViewCell GetCell(UITableView tableView, NSIndexPath indexPath)
+    //    {
+
+    //        return _cellFactory(tableView, indexPath.Row, _elements.ToArray()[indexPath.Row]);
+    //    }
+
+    //    public override nint RowsInSection(UITableView tableview, nint section)
+    //    {
+
+    //        var items = _getItems(tableview, section);
+    //        return items.ToArray().Length;
+    //    }
+    //}
 }
