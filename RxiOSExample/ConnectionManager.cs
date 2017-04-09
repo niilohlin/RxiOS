@@ -7,6 +7,7 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Text;
+using Intents;
 using Newtonsoft.Json;
 
 namespace RxiOSExample
