@@ -5,7 +5,9 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using Foundation;
+using UIKit.Reactive.CocoaUnits;
 using UIKit.Reactive.DataSources;
 
 
@@ -31,6 +33,12 @@ namespace UIKit.Reactive
             });
         }
 
+        public static BehaviorSubject<IList<NSIndexPath>> SelectedItems<TParent>(this Reactive<TParent> rx)
+            where TParent : UITableView
+        {
+            return ((_RxTableViewSource<object>) rx.Parent.Source).SelectedItems;
+        }
+
         //public static IObserver<IEnumerable<TSection>> Sections<TParent, TSection, TElement>(
         //    this Reactive<TParent> rx,
         //    Func<UITableView, int, TSection, string> getHeader,
@@ -47,15 +55,35 @@ namespace UIKit.Reactive
 
     }
 
-    internal class _RxTableViewSimpleSource<TElement>: UITableViewSource
+    internal abstract class _RxTableViewSource<TElement> : UITableViewSource
+    {
+        protected readonly IEnumerable<TElement> _elements;
+        internal BehaviorSubject<IList<NSIndexPath>> SelectedItems = new BehaviorSubject<IList<NSIndexPath>>(new List<NSIndexPath>());
+
+        internal _RxTableViewSource(IEnumerable<TElement> elements)
+        {
+            _elements = elements;
+        }
+
+        public override nint RowsInSection(UITableView tableview, nint section)
+        {
+            return _elements.Count();
+        }
+
+        public override void RowSelected(UITableView tableView, NSIndexPath indexPath)
+        {
+            SelectedItems.OnNext(SelectedItems.Value.Append(indexPath).ToList());
+        }
+        
+    }
+
+    internal class _RxTableViewSimpleSource<TElement>: _RxTableViewSource<TElement>
     {
         private readonly Func<UITableView, int, TElement, UITableViewCell> _cellFactory;
-        private readonly IEnumerable<TElement> _elements;
 
-        public _RxTableViewSimpleSource(IEnumerable<TElement> elements, Func<UITableView, int, TElement, UITableViewCell> cellFactory)
+        public _RxTableViewSimpleSource(IEnumerable<TElement> elements, Func<UITableView, int, TElement, UITableViewCell> cellFactory): base(elements)
         {
             _cellFactory = cellFactory;
-            _elements = elements;
         }
 
         public override UITableViewCell GetCell(UITableView tableView, NSIndexPath indexPath)
@@ -63,22 +91,16 @@ namespace UIKit.Reactive
             return _cellFactory(tableView, indexPath.Row, _elements.ToArray()[indexPath.Row]);
         }
 
-        public override nint RowsInSection(UITableView tableview, nint section)
-        {
-            return _elements.Count();
-        }
     }
 
-    internal class _RxTableViewIdentifierSource<TElement, TCell>: UITableViewSource where TCell: UITableViewCell
+    internal class _RxTableViewIdentifierSource<TElement, TCell>: _RxTableViewSource<TElement> where TCell: UITableViewCell
     {
         private readonly Action<int, TElement, TCell> _cellInitializer;
-        private readonly IEnumerable<TElement> _elements;
         private readonly string _cellIdentifier;
 
-        public _RxTableViewIdentifierSource(string cellIdentifier, IEnumerable<TElement> elements, Action<int, TElement, TCell> cellInitializer)
+        public _RxTableViewIdentifierSource(string cellIdentifier, IEnumerable<TElement> elements, Action<int, TElement, TCell> cellInitializer): base(elements)
         {
             _cellInitializer = cellInitializer;
-            _elements = elements;
             _cellIdentifier = cellIdentifier;
         }
 
@@ -87,11 +109,6 @@ namespace UIKit.Reactive
             var cell = (TCell)tableView.DequeueReusableCell(_cellIdentifier);
             _cellInitializer(indexPath.Row, _elements.ToArray()[indexPath.Row], cell);
             return cell;
-        }
-
-        public override nint RowsInSection(UITableView tableview, nint section)
-        {
-            return _elements.Count();
         }
     }
 
