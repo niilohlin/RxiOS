@@ -22,9 +22,7 @@ namespace RxiOSExample
             Window = new UIWindow(UIScreen.MainScreen.Bounds);
 
             // If you have defined a root view controller, set it here:
-            var connectionManager = new ConnectionManager();
-            var loginViewModel = new LoginViewModel(connectionManager);
-            Window.RootViewController = new LoginViewController(loginViewModel);
+            Window.RootViewController = new LoginViewController();
 
             // make the window visible
             Window.MakeKeyAndVisible();

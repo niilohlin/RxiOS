@@ -15,13 +15,12 @@ namespace RxiOSExample
         private UITextField _usernameTextField;
         private UITextField _passwordTextField;
         private UIButton _loginButton;
-        private readonly LoginViewModel _viewModel;
+        private readonly LoginViewModel _viewModel = new LoginViewModel();
         private UIActivityIndicatorView _activityIndicatorView;
         private readonly CompositeDisposable _compositeDisposable = new CompositeDisposable();
 
-        public LoginViewController(LoginViewModel viewModel)
+        public LoginViewController()
         {
-            _viewModel = viewModel;
         }
 
         public override void ViewDidLoad()

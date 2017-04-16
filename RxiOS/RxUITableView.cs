@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
@@ -18,6 +19,7 @@ namespace UIKit.Reactive
         public static IObserver<IEnumerable<TElement>> Items<TParent, TElement>(this Reactive<TParent> rx,
             Func<UITableView, int, TElement, UITableViewCell> cellFactory) where TParent: UITableView
         {
+            Debug.Assert(rx.Parent.Source == null, "Source is already set");
             return Observer.Create<IEnumerable<TElement>>(nextElements =>
             {
                 rx.Parent.Source = new _RxTableViewSimpleSource<TElement>(nextElements, cellFactory);
@@ -27,15 +29,26 @@ namespace UIKit.Reactive
         public static IObserver<IEnumerable<TElement>> Items<TParent, TElement, TCell>(this Reactive<TParent> rx, string cellIdentifier,
             Action<int, TElement, TCell> cellInitializer) where TParent: UITableView where TCell: UITableViewCell
         {
+            Debug.Assert(rx.Parent.Source == null, "Source is already set");
             return Observer.Create<IEnumerable<TElement>>(nextElements =>
             {
                 rx.Parent.Source = new _RxTableViewIdentifierSource<TElement, TCell>(cellIdentifier, nextElements, cellInitializer);
             });
         }
 
+
+        public static IObserver<IEnumerable<string>> SectionTitles<TParent>(this Reactive<TParent> rx) where TParent: UITableView
+        {
+            return Observer.Create<IEnumerable<string>>(strings =>
+            {
+                throw new NotImplementedException("");
+            });
+        }
+
         public static BehaviorSubject<IList<NSIndexPath>> SelectedItems<TParent>(this Reactive<TParent> rx)
             where TParent : UITableView
         {
+            Debug.Assert(rx.Parent.Source != null, "Source is not set");
             return ((_RxTableViewSource<object>) rx.Parent.Source).SelectedItems;
         }
 
@@ -50,7 +63,6 @@ namespace UIKit.Reactive
         //    {
         //        rx.Parent.Source = new _RxTableViewSimpleSectionedSource<TSection, TElement>(nextSections, getHeader, getItems, cellFactory);
         //    });
-            
         //}
 
     }
@@ -90,7 +102,6 @@ namespace UIKit.Reactive
         {
             return _cellFactory(tableView, indexPath.Row, _elements.ToArray()[indexPath.Row]);
         }
-
     }
 
     internal class _RxTableViewIdentifierSource<TElement, TCell>: _RxTableViewSource<TElement> where TCell: UITableViewCell

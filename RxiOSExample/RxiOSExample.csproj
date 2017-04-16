@@ -84,15 +84,15 @@
     <CodesignKey>iPhone Distribution</CodesignKey>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ConnectionManager.cs" />
     <Compile Include="LoginViewController.cs" />
     <Compile Include="LoginViewModel.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <None Include="GettingStarted.Xamarin" />
     <None Include="Info.plist" />
+    <Compile Include="MainViewController.cs" />
     <Compile Include="MainViewModel.cs" />
-    <Compile Include="Models\User.cs" />
+    <Compile Include="Models\TodoItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
     <None Include="packages.config" />

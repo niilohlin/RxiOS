@@ -7,7 +7,7 @@
 
         public DelegateProxy(object parent)
         {
-            parent = parent;
+            _parent = parent;
         }
     }
 }
