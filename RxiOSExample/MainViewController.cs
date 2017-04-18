@@ -34,9 +34,5 @@ namespace RxiOSExample
             base.ViewDidAppear(animated);
             _tableView.Frame = View.Frame;
         }
-
-
-
-        
     }
 }

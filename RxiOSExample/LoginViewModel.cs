@@ -30,9 +30,15 @@ namespace RxiOSExample
         public IObservable<Unit> Login()
         {
             ActivityIndicatorViewShowing.OnNext(true);
-            return Observable.Return(Unit.Default)
-                .DelaySubscription(TimeSpan.FromSeconds(3))
-                .Finally(() => ActivityIndicatorViewShowing.OnNext(false));
+            if (Username.Value == "Asdf" && Password.Value == "fdsa")
+            {
+                return Observable.Return(Unit.Default)
+                    .DelaySubscription(TimeSpan.FromSeconds(3))
+                    .Finally(() => ActivityIndicatorViewShowing.OnNext(false));
+            }
+            ErrorOccured.OnNext(new Exception("Wrong username or password"));
+            ActivityIndicatorViewShowing.OnNext(false);
+            return Observable.Never<Unit>();
         }
     }
 }
