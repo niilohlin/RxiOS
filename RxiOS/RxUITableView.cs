@@ -52,6 +52,17 @@ namespace UIKit.Reactive
             return ((_RxTableViewSource<object>) rx.Parent.Source).SelectedItems;
         }
 
+        public static IObserver<IEnumerable<nfloat>> RowHeights<TParent, TModel>(this Reactive<TParent> rx)
+            where TParent : UITableView
+        {
+            Debug.Assert(rx.Parent.Source != null, "Source is not set");
+            return Observer.Create<IEnumerable<nfloat>>(heights =>
+            {
+                ((_RxTableViewSource<TModel>) rx.Parent.Source).RowHeights = heights.ToList();
+                rx.Parent.ReloadData();// TODO only reload necessary rows
+            });
+        }
+
         //public static IObserver<IEnumerable<TSection>> Sections<TParent, TSection, TElement>(
         //    this Reactive<TParent> rx,
         //    Func<UITableView, int, TSection, string> getHeader,
@@ -71,6 +82,7 @@ namespace UIKit.Reactive
     {
         protected readonly IEnumerable<TElement> _elements;
         internal BehaviorSubject<IList<NSIndexPath>> SelectedItems = new BehaviorSubject<IList<NSIndexPath>>(new List<NSIndexPath>());
+        internal List<nfloat> RowHeights;
 
         internal _RxTableViewSource(IEnumerable<TElement> elements)
         {
@@ -85,6 +97,11 @@ namespace UIKit.Reactive
         public override void RowSelected(UITableView tableView, NSIndexPath indexPath)
         {
             SelectedItems.OnNext(SelectedItems.Value.Append(indexPath).ToList());
+        }
+
+        public override nfloat GetHeightForRow(UITableView tableView, NSIndexPath indexPath)
+        {
+            return RowHeights?[indexPath.Row] ?? 44;
         }
         
     }

@@ -82,11 +82,19 @@ namespace RxiOSExample
             _viewModel.ActivityIndicatorViewShowing.BindTo(_activityIndicatorView.Rx().Animating()).DisposedBy(_compositeDisposable);
             _viewModel.ErrorOccured.SubscribeOnMain().Subscribe(e => ShowError(e.Message)).DisposedBy(_compositeDisposable);
 
-            var loginObserver = Observer.Create( (Unit n) => Debug.Print("login succeeded") );
+            var loginObserver = Observer.Create((Unit n) => GotoMain());
 
             _loginButton.Rx().Tap().SelectMany(b => _viewModel.Login().SubscribeOnMain())
                 .Subscribe(loginObserver)
                 .DisposedBy(_compositeDisposable);
+        }
+
+        private void GotoMain()
+        {
+            var mainViewController = new MainViewController();
+            var navigationController = new UINavigationController(mainViewController);
+            PresentViewController(navigationController, true, null);
+            
         }
 
         private void ShowError(string message)

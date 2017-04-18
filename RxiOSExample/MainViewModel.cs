@@ -15,8 +15,9 @@ namespace RxiOSExample
         public BehaviorSubject<List<TodoItem>> TodoItems
             = new BehaviorSubject<List<TodoItem>>(new List<TodoItem>
             {
-                new TodoItem("write tests"),
-                new TodoItem("buy coffee")
+                new TodoItem("write tests", "It is very important to write unit tests"),
+                new TodoItem("buy coffee", "Do stupid things faster with more energy"),
+                new TodoItem("renew cert"),
             });
     }
 }
