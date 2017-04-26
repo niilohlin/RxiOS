@@ -20,12 +20,14 @@ namespace RxiOSExample
         {
             View.BackgroundColor = UIColor.White;
             base.ViewDidLoad();
-            _viewModel.TodoItems.BindTo(_tableView.Rx().Items((UITableView tv, int row, TodoItem todoItem) =>
-            {
-                var cell = new UITableViewCell();
-                cell.TextLabel.Text = todoItem.Name;
-                return cell;
-            })).DisposedBy(_compositeDisposable);
+            _tableView.RegisterClassForCellReuse(typeof(TodoTableViewCell), nameof(TodoTableViewCell));
+            _viewModel
+                .TodoItems
+                .BindTo(_tableView.Rx() .Items<UITableView, TodoItem, TodoTableViewCell>(
+                    nameof(TodoTableViewCell),
+                    (row, todoItem, cell) => cell.Configure(todoItem))
+                )
+                .DisposedBy(_compositeDisposable);
 
             _viewModel
                 .TodoItems
@@ -33,7 +35,6 @@ namespace RxiOSExample
                 .BindTo(_tableView.Rx().RowHeights<UITableView, TodoItem>())
                 .DisposedBy(_compositeDisposable);
 
-            Observable.Return("").Subscribe(s => Debug.Print("" + s));
             _tableView.Rx()
                 .ItemSelected<UITableView, TodoItem>()
                 .Subscribe(indexPath =>
