@@ -26,6 +26,11 @@
             IsPreformed = preformed;
         }
 
+        public TodoItem Switch()
+        {
+            return IsPreformed ? UnPreform() : Preformed();
+        }
+
         public TodoItem Preformed()
         {
             return new TodoItem(Name, Detail, true);

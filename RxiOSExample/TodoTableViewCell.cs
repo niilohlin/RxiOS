@@ -5,10 +5,9 @@ namespace RxiOSExample
 {
     public class TodoTableViewCell
     {
-
-        public static nfloat Height(TodoItem todo)
+        public static nfloat Height(TodoItem todoItem)
         {
-            return 25 + (todo.Detail != null ? 25 : 0);
+            return 44;
         }
     }
 }

@@ -45,11 +45,11 @@ namespace UIKit.Reactive
             });
         }
 
-        public static BehaviorSubject<IList<NSIndexPath>> SelectedItems<TParent>(this Reactive<TParent> rx)
+        public static IObservable<NSIndexPath> ItemSelected<TParent, TModel>(this Reactive<TParent> rx)
             where TParent : UITableView
         {
             Debug.Assert(rx.Parent.Source != null, "Source is not set");
-            return ((_RxTableViewSource<object>) rx.Parent.Source).SelectedItems;
+            return ((_RxTableViewSource<TModel>) rx.Parent.Source).ItemSelected;
         }
 
         public static IObserver<IEnumerable<nfloat>> RowHeights<TParent, TModel>(this Reactive<TParent> rx)
@@ -81,7 +81,7 @@ namespace UIKit.Reactive
     internal abstract class _RxTableViewSource<TElement> : UITableViewSource
     {
         protected readonly IEnumerable<TElement> _elements;
-        internal BehaviorSubject<IList<NSIndexPath>> SelectedItems = new BehaviorSubject<IList<NSIndexPath>>(new List<NSIndexPath>());
+        internal Subject<NSIndexPath> ItemSelected = new Subject<NSIndexPath>();
         internal List<nfloat> RowHeights;
 
         internal _RxTableViewSource(IEnumerable<TElement> elements)
@@ -96,7 +96,7 @@ namespace UIKit.Reactive
 
         public override void RowSelected(UITableView tableView, NSIndexPath indexPath)
         {
-            SelectedItems.OnNext(SelectedItems.Value.Append(indexPath).ToList());
+            ItemSelected.OnNext(indexPath);
         }
 
         public override nfloat GetHeightForRow(UITableView tableView, NSIndexPath indexPath)

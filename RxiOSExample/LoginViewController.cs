@@ -91,7 +91,7 @@ namespace RxiOSExample
 
         private void GotoMain()
         {
-            var mainViewController = new MainViewController();
+            var mainViewController = new TodoViewController();
             var navigationController = new UINavigationController(mainViewController);
             PresentViewController(navigationController, true, null);
             

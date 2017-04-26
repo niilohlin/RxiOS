@@ -1,13 +1,16 @@
-﻿using System.Linq;
+﻿using System.Diagnostics;
+using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using RxiOSExample.Models;
 using UIKit;
 using UIKit.Reactive;
+using System;
+using Foundation;
 
 namespace RxiOSExample
 {
-    public class MainViewController: UIViewController
+    public class TodoViewController: UIViewController
     {
         private readonly MainViewModel _viewModel = new MainViewModel();
         private readonly UITableView _tableView = new UITableView();
@@ -24,7 +27,22 @@ namespace RxiOSExample
                 return cell;
             })).DisposedBy(_compositeDisposable);
 
-            _viewModel.TodoItems.Select(items => items.Select(TodoTableViewCell.Height)).BindTo(_tableView.Rx().RowHeights<UITableView, TodoItem>()).DisposedBy(_compositeDisposable);
+            _viewModel
+                .TodoItems
+                .Select(items => items.Select(TodoTableViewCell.Height))
+                .BindTo(_tableView.Rx().RowHeights<UITableView, TodoItem>())
+                .DisposedBy(_compositeDisposable);
+
+            Observable.Return("").Subscribe(s => Debug.Print("" + s));
+            _tableView.Rx()
+                .ItemSelected<UITableView, TodoItem>()
+                .Subscribe(indexPath =>
+                    {
+                        var todoItems = _viewModel.TodoItems.Value;
+                        todoItems[indexPath.Row] = todoItems[indexPath.Row].Switch();
+                        _viewModel.TodoItems.OnNext(todoItems);
+                    }
+                ).DisposedBy(_compositeDisposable);
 
             View.AddSubview(_tableView);
         }

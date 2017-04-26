@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Text;
 
@@ -10,6 +11,7 @@ using UIKit;
 
 namespace RxiOSExample
 {
+
     class MainViewModel
     {
         public BehaviorSubject<List<TodoItem>> TodoItems
@@ -19,5 +21,6 @@ namespace RxiOSExample
                 new TodoItem("buy coffee", "Do stupid things faster with more energy"),
                 new TodoItem("renew cert"),
             });
+
     }
 }
