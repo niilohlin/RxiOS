@@ -123,9 +123,9 @@
     <Reference Include="Xamarin.iOS" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RxiOS\RxiOS.csproj">
+    <ProjectReference Include="..\RxiOS\RxCocoa.csproj">
       <Project>{37304e9a-7d60-430d-80b1-d4b1c5a294be}</Project>
-      <Name>RxiOS</Name>
+      <Name>RxCocoa</Name>
       <IsAppExtension>false</IsAppExtension>
       <IsWatchApp>false</IsWatchApp>
     </ProjectReference>

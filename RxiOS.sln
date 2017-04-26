@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26228.9
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RxiOS", "RxiOS\RxiOS.csproj", "{37304E9A-7D60-430D-80B1-D4B1C5A294BE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RxCocoa", "RxiOS\RxCocoa.csproj", "{37304E9A-7D60-430D-80B1-D4B1C5A294BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RxiOSTests", "RxiOSTests\RxiOSTests.csproj", "{6DB54787-42BA-48BF-B790-A93AF639919F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RxCocoaTests", "RxiOSTests\RxCocoaTests.csproj", "{6DB54787-42BA-48BF-B790-A93AF639919F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RxiOSExample", "RxiOSExample\RxiOSExample.csproj", "{CC86E8B5-8A2B-494F-BBF8-29E6BEEBD8F2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RxCocoaExample", "RxiOSExample\RxCocoaExample.csproj", "{CC86E8B5-8A2B-494F-BBF8-29E6BEEBD8F2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

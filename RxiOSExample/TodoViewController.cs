@@ -37,13 +37,15 @@ namespace RxiOSExample
 
             _tableView.Rx()
                 .ItemSelected<UITableView, TodoItem>()
-                .Subscribe(indexPath =>
+                .Select(indexPath =>
                     {
                         var todoItems = _viewModel.TodoItems.Value;
                         todoItems[indexPath.Row] = todoItems[indexPath.Row].Switch();
-                        _viewModel.TodoItems.OnNext(todoItems);
+                        return todoItems;
                     }
-                ).DisposedBy(_compositeDisposable);
+                )
+                .BindTo(_viewModel.TodoItems)
+                .DisposedBy(_compositeDisposable);
 
             View.AddSubview(_tableView);
         }
