@@ -23,7 +23,7 @@ namespace RxiOSExample
             _tableView.RegisterClassForCellReuse(typeof(TodoTableViewCell), nameof(TodoTableViewCell));
             _viewModel
                 .TodoItems
-                .BindTo(_tableView.Rx() .Items<UITableView, TodoItem, TodoTableViewCell>(
+                .BindTo(_tableView.Rx().Items<UITableView, TodoItem, TodoTableViewCell>(
                     nameof(TodoTableViewCell),
                     (row, todoItem, cell) => cell.Configure(todoItem))
                 )

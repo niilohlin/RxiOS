@@ -30,9 +30,15 @@ namespace UIKit.Reactive
             Action<int, TElement, TCell> cellInitializer) where TParent: UITableView where TCell: UITableViewCell
         {
             Debug.Assert(rx.Parent.Source == null, "Source is already set");
+            _RxTableViewIdentifierSource<TElement, TCell> source = new _RxTableViewIdentifierSource<TElement, TCell>(cellIdentifier, new List<TElement>(), cellInitializer);
             return Observer.Create<IEnumerable<TElement>>(nextElements =>
             {
-                rx.Parent.Source = new _RxTableViewIdentifierSource<TElement, TCell>(cellIdentifier, nextElements, cellInitializer);
+                if (rx.Parent.Source == null)
+                {
+                    rx.Parent.Source = source;
+                }
+                source.Elements = nextElements;
+                rx.Parent.ReloadData();
             });
         }
 
@@ -80,18 +86,18 @@ namespace UIKit.Reactive
 
     internal abstract class _RxTableViewSource<TElement> : UITableViewSource
     {
-        protected readonly IEnumerable<TElement> _elements;
+        internal IEnumerable<TElement> Elements;
         internal Subject<NSIndexPath> ItemSelected = new Subject<NSIndexPath>();
         internal List<nfloat> RowHeights;
 
         internal _RxTableViewSource(IEnumerable<TElement> elements)
         {
-            _elements = elements;
+            Elements = elements;
         }
 
         public override nint RowsInSection(UITableView tableview, nint section)
         {
-            return _elements.Count();
+            return Elements.Count();
         }
 
         public override void RowSelected(UITableView tableView, NSIndexPath indexPath)
@@ -117,7 +123,7 @@ namespace UIKit.Reactive
 
         public override UITableViewCell GetCell(UITableView tableView, NSIndexPath indexPath)
         {
-            return _cellFactory(tableView, indexPath.Row, _elements.ToArray()[indexPath.Row]);
+            return _cellFactory(tableView, indexPath.Row, Elements.ToArray()[indexPath.Row]);
         }
     }
 
@@ -135,7 +141,7 @@ namespace UIKit.Reactive
         public override UITableViewCell GetCell(UITableView tableView, NSIndexPath indexPath)
         {
             var cell = (TCell)tableView.DequeueReusableCell(_cellIdentifier);
-            _cellInitializer(indexPath.Row, _elements.ToArray()[indexPath.Row], cell);
+            _cellInitializer(indexPath.Row, Elements.ToArray()[indexPath.Row], cell);
             return cell;
         }
     }
@@ -163,7 +169,7 @@ namespace UIKit.Reactive
     //    public override UITableViewCell GetCell(UITableView tableView, NSIndexPath indexPath)
     //    {
 
-    //        return _cellFactory(tableView, indexPath.Row, _elements.ToArray()[indexPath.Row]);
+    //        return _cellFactory(tableView, indexPath.Row, Elements.ToArray()[indexPath.Row]);
     //    }
 
     //    public override nint RowsInSection(UITableView tableview, nint section)
