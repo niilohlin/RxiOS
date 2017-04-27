@@ -20,9 +20,15 @@ namespace UIKit.Reactive
             Func<UITableView, int, TElement, UITableViewCell> cellFactory) where TParent: UITableView
         {
             Debug.Assert(rx.Parent.Source == null, "Source is already set");
+            var source = new _RxTableViewSimpleSource<TElement>(new List<TElement>(), cellFactory);
             return Observer.Create<IEnumerable<TElement>>(nextElements =>
             {
-                rx.Parent.Source = new _RxTableViewSimpleSource<TElement>(nextElements, cellFactory);
+                source.Elements = new List<IGrouping<Unit, TElement>>{new SimpleList<TElement>(nextElements)};
+                if (rx.Parent.Source == null)
+                {
+                    rx.Parent.Source = source;
+                }
+                rx.Parent.ReloadData();
             });
         }
 
@@ -33,11 +39,11 @@ namespace UIKit.Reactive
             _RxTableViewIdentifierSource<TElement, TCell> source = new _RxTableViewIdentifierSource<TElement, TCell>(cellIdentifier, new List<TElement>(), cellInitializer);
             return Observer.Create<IEnumerable<TElement>>(nextElements =>
             {
+                source.Elements = new List<IGrouping<Unit, TElement>>{new SimpleList<TElement>(nextElements)};
                 if (rx.Parent.Source == null)
                 {
                     rx.Parent.Source = source;
                 }
-                source.Elements = new List<IGrouping<Unit, TElement>>{new SimpleList<TElement>(nextElements)};
                 rx.Parent.ReloadData();
             });
         }
@@ -56,6 +62,13 @@ namespace UIKit.Reactive
         {
             Debug.Assert(rx.Parent.Source != null, "Source is not set");
             return ((_RxTableViewSourceBase) rx.Parent.Source).ItemSelected;
+        }
+
+        public static IObservable<TModel> ModelSelected<TParent, TModel>(this Reactive<TParent> rx)
+            where TParent : UITableView
+        {
+            var source = (_RxTableViewSimpleSource<TModel>) rx.Parent.Source;
+            return source.ItemSelected.Select(indexPath => source.Elements[indexPath.Section].ToList()[indexPath.Row]);
         }
 
         public static IObserver<IEnumerable<nfloat>> RowHeights<TParent>(this Reactive<TParent> rx)

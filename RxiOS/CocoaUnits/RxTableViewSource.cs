@@ -51,7 +51,6 @@ namespace UIKit.Reactive.CocoaUnits
         {
             return Elements[(int) section].Count();
         }
-
     }
 
     internal class _RxTableViewSimpleSource<TElement>: _RxTableViewSource<Unit,TElement>
@@ -68,6 +67,33 @@ namespace UIKit.Reactive.CocoaUnits
         public override UITableViewCell GetCell(UITableView tableView, NSIndexPath indexPath)
         {
             return _cellFactory(tableView, indexPath.Row, Elements[indexPath.Section].ToList()[indexPath.Row]);
+        }
+    }
+
+
+    internal class _RxSectionedTableViewIdentifierSource<TKey, TElement, TCell>: _RxTableViewSource<TKey, TElement> where TCell: UITableViewCell
+    {
+        private readonly Action<int, TElement, TCell> _cellInitializer;
+        private readonly string _cellIdentifier;
+        public Func<UITableView, int, TKey, UIView> HeaderFactory;
+
+        public _RxSectionedTableViewIdentifierSource(string cellIdentifier, IList<IGrouping<TKey, TElement>> elements, Action<int, TElement, TCell> cellInitializer):  base(elements)
+        {
+            _cellInitializer = cellInitializer;
+            _cellIdentifier = cellIdentifier;
+        }
+
+        public override UITableViewCell GetCell(UITableView tableView, NSIndexPath indexPath)
+        {
+            var cell = (TCell)tableView.DequeueReusableCell(_cellIdentifier);
+            _cellInitializer(indexPath.Row, Elements[indexPath.Section].ToList()[indexPath.Row], cell);
+            return cell;
+        }
+
+        public override UIView GetViewForHeader(UITableView tableView, nint section)
+        {
+            var key = Elements[(int)section].Key;
+            return HeaderFactory?.Invoke(tableView, (int) section, key);
         }
     }
 
