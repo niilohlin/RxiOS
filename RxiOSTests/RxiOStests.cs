@@ -81,10 +81,8 @@ namespace RxiOSTests
             usernameTextField.Rx().Text()
                 .CombineLatest(passwordTextField.Rx().Text(), Tuple.Create)
                 .Select(tuple => tuple.Item1 != "" && tuple.Item2 != "")
-                .Subscribe(loginButton.Rx().Enabled())
+                .BindTo(loginButton.Rx().Enabled())
                 .DisposedBy(compositeDisposable);
-
-            Assume.That(!loginButton.Enabled);
 
             foreach (var username in usernameInput)
             {

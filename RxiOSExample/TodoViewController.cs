@@ -32,11 +32,11 @@ namespace RxiOSExample
             _viewModel
                 .TodoItems
                 .Select(items => items.Select(TodoTableViewCell.Height))
-                .BindTo(_tableView.Rx().RowHeights<UITableView, TodoItem>())
+                .BindTo(_tableView.Rx().RowHeights())
                 .DisposedBy(_compositeDisposable);
 
             _tableView.Rx()
-                .ItemSelected<UITableView, TodoItem>()
+                .ItemSelected()
                 .Select(indexPath =>
                     {
                         var todoItems = _viewModel.TodoItems.Value;
