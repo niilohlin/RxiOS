@@ -185,13 +185,13 @@ namespace UIKit.Reactive
         }
     }
 
-    //public static class RxUIAlertAction
-    //{
-        //public static UIBindingObserver<T, bool> Enabled<T>(this Reactive<T> rx) where T : UIAlertAction
-        //{ 
-        //return new UIBindingObserver<T, bool>(rx.Parent, (aa, b) => aa.Enabled = b);
-        //}
-    //}
+    public static class RxUIAlertAction
+    {
+        public static UIBindingObserver<T, bool> AlertActionEnabled<T>(this Reactive<T> rx) where T : UIAlertAction
+        {
+            return new UIBindingObserver<T, bool>(rx.Parent, (aa, b) => aa.Enabled = b);
+        }
+    }
 
     public static class RxUISegmentedControl
     {
@@ -234,8 +234,6 @@ namespace UIKit.Reactive
                     () => DispatchQueue.MainQueue.DispatchAsync(observer.OnCompleted)
                 );
             });
-
-
         }
     }
 

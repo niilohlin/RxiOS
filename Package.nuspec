@@ -12,7 +12,18 @@
     <releaseNotes>The most common extensions ported.</releaseNotes>
     <copyright>Copyright 2017</copyright>
     <dependencies>
-      <dependency id="SampleDependency" version="1.0" />
     </dependencies>
   </metadata>
+  <files>
+	  <file src="RxiOS\IReactive.cs"/>
+	  <file src="RxiOS\Reactive.cs"/>
+	  <file src="RxiOS\RxCocoa.cs"/>
+	  <file src="RxiOS\RxUITableView.cs"/>
+	  <file src="RxiOS\Common\ControlTarget.cs"/>
+	  <file src="RxiOS\CocoaUnits\ControlEvent.cs"/>
+	  <file src="RxiOS\CocoaUnits\ControlProperty.cs"/>
+	  <file src="RxiOS\CocoaUnits\RxTableViewSource.cs"/>
+	  <file src="RxiOS\CocoaUnits\UIBindingObserver.cs"/>
+	  <file src="RxiOS\Proxies\DelegateProxy.cs"/>
+  </files>
 </package>
