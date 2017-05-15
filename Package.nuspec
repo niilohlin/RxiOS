@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>Package</id>
+    <id>RxCocoa</id>
     <version>1.0.0</version>
     <authors>niilohlin</authors>
     <owners>niilohlin</owners>
