@@ -84,7 +84,7 @@ namespace RxiOSExample
 
             var loginObserver = Observer.Create((Unit n) => GotoMain());
 
-            _loginButton.Rx().Tap().SelectMany(b => _viewModel.Login().SubscribeOnMain())
+            _loginButton.Rx().Tap().SelectMany(b => _viewModel.LoginSuccessful().SubscribeOnMain())
                 .Subscribe(loginObserver)
                 .DisposedBy(_compositeDisposable);
         }
