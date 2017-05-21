@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>RxCocoa</id>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <authors>niilohlin</authors>
     <owners>niilohlin</owners>
     <licenseUrl>https://raw.githubusercontent.com/niilohlin/RxiOS/master/LICENSE</licenseUrl>
@@ -11,8 +11,11 @@
     <description>A partial port of RxCocoa to work with Xamarin.</description>
     <releaseNotes>The most common extensions ported.</releaseNotes>
     <copyright>Copyright 2017</copyright>
+    <dependencies>
+      <dependency id="System.Reactive" version="3.1.1" />
+    </dependencies>
   </metadata>
-	  <files>
-		  <file src="RxiOS\bin\Debug\RxiOS.???" target="lib/Xamarin.iOS10"/>
-	  </files>
+  <files>
+	  <file src="RxiOS\bin\Debug\RxiOS.???" target="lib/Xamarin.iOS10"/>
+  </files>
   </package>
