@@ -9,65 +9,50 @@ using CoreAnimation;
 
 namespace RxiOSExample
 {
-    public interface ILoginViewModelInputs
-    {
-        IObservable<string> Username { get; }
-        IObservable<string> Password { get; }
-        IObservable<Unit> ButtonTap { get; }
-    }
-    public interface ILoginViewModelOutputs
-    {
-        IObservable<string> LoginButtonTitle { get; }
-        IObservable<string> UsernamePlaceholder { get; }
-        IObservable<string> PasswordPlaceholder { get; }
-        IObservable<bool> LoginButtonEnabled { get; }
-        IObservable<bool> ActivityIndicatorViewShowing { get;  }
-        IObservable<Exception> ErrorOccured { get; }
-        IObservable<Unit> Login { get; }
-    }
 
-    public interface ILoginViewModel
+    public class LoginViewModel
     {
-        ILoginViewModelInputs Inputs { get; }
-        ILoginViewModelOutputs Outputst { get; }
+        public readonly IObservable<string> Username;
+        public readonly IObservable<string> Password;
+        public readonly IObservable<Unit> ButtonTap;
+        public readonly IObservable<string> LoginButtonTitle;
+        public readonly IObservable<string> UsernamePlaceholder;
+        public readonly IObservable<string> PasswordPlaceholder;
+        public readonly IObservable<bool> LoginButtonEnabled;
+        public readonly IObservable<bool> ActivityIndicatorViewShowing;
+        public readonly IObservable<Exception> ErrorOccured;
+        public readonly IObservable<Unit> LoginSuccessful;
+        public readonly IObservable<bool> LoggingIn;
 
-    }
 
-    public class LoginViewModel: ILoginViewModel, ILoginViewModelInputs, ILoginViewModelOutputs
-    {
-        public IObservable<string> Username { get; set; }
-        public IObservable<string> Password { get; set; }
-        public IObservable<Unit> ButtonTap { get; }
-        public IObservable<string> LoginButtonTitle { get; }
-        public IObservable<string> UsernamePlaceholder { get; }
-        public IObservable<string> PasswordPlaceholder { get; }
-        public IObservable<bool> LoginButtonEnabled { get; }
-        public IObservable<bool> ActivityIndicatorViewShowing { get; }
-        public IObservable<Exception> ErrorOccured { get; }
-        public ILoginViewModelInputs Inputs => this;
-        public ILoginViewModelOutputs Outputst => this;
-
-        public LoginViewModel()
+        public LoginViewModel(IObservable<string> username, IObservable<string> password, IObservable<Unit> buttonTap)
         {
+            Username = username;
+            Password = password;
+            ButtonTap = buttonTap;
             LoginButtonEnabled = Username
-                .CombineLatest(Password, (username, password) => username != "" && password != "")
+                .CombineLatest(Password, (usernamestring, passwordstring) => usernamestring != "" && passwordstring != "")
                 .CombineLatest(ActivityIndicatorViewShowing, (enabled, showing) => enabled && !showing);
 
-            Login
+            LoggingIn = ButtonTap.Scan(false, (b, unit) => !b);
+            ActivityIndicatorViewShowing = LoggingIn;
 
-                ActivityIndicatorViewShowing.OnNext(true);
-                if (Username.Value == "Asdf" && Password.Value == "fdsa")
+            LoginSuccessful = ButtonTap.CombineLatest(Username, (u, s) => s).CombineLatest(Password,
+                ((usernamestring, passwordstring) =>
                 {
-                    return Observable.Return(Unit.Default)
-                        .DelaySubscription(TimeSpan.FromSeconds(3))
-                        .Finally(() => ActivityIndicatorViewShowing.OnNext(false));
-                }
-                ErrorOccured.OnNext(new Exception("Wrong username or password"));
-                ActivityIndicatorViewShowing.OnNext(false);
-                return Observable.Never<Unit>();
+                    if (LoginSucceded(usernamestring, passwordstring) )
+                    {
+                        return Observable.Return(Unit.Default)
+                            .DelaySubscription(TimeSpan.FromSeconds(3));
+                    }
+                    return Observable.Never<Unit>();
+                })).SelectMany(s => s);
         }
 
-        public IObservable<Unit> Login { get; }
+        public bool LoginSucceded(string username, string password)
+        {
+            return username == "Asdf" && password == "fdsa";
+        }
 
     }
 }

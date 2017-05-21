@@ -15,7 +15,7 @@ namespace RxiOSExample
         private UITextField _usernameTextField;
         private UITextField _passwordTextField;
         private UIButton _loginButton;
-        private readonly LoginViewModel _viewModel = new LoginViewModel();
+        private LoginViewModel _viewModel;
         private UIActivityIndicatorView _activityIndicatorView;
         private readonly CompositeDisposable _compositeDisposable = new CompositeDisposable();
 
@@ -75,18 +75,15 @@ namespace RxiOSExample
 
         private void AddBindings()
         {
+            _viewModel = new LoginViewModel(_usernameTextField.Rx().Text(), _passwordTextField.Rx().Text(), _loginButton.Rx().Tap().Select(button => Unit.Default));
             _viewModel.LoginButtonTitle.BindTo(_loginButton.Rx().Title(UIControlState.Normal)).DisposedBy(_compositeDisposable);
-            _usernameTextField.Rx().Text().BindTo(_viewModel.Username).DisposedBy(_compositeDisposable);
-            _passwordTextField.Rx().Text().BindTo(_viewModel.Password).DisposedBy(_compositeDisposable);
             _viewModel.LoginButtonEnabled.BindTo(_loginButton.Rx().Enabled()).DisposedBy(_compositeDisposable);
             _viewModel.ActivityIndicatorViewShowing.BindTo(_activityIndicatorView.Rx().Animating()).DisposedBy(_compositeDisposable);
             _viewModel.ErrorOccured.SubscribeOnMain().Subscribe(e => ShowError(e.Message)).DisposedBy(_compositeDisposable);
 
             var loginObserver = Observer.Create((Unit n) => GotoMain());
 
-            _loginButton.Rx().Tap().SelectMany(b => _viewModel.LoginSuccessful().SubscribeOnMain())
-                .Subscribe(loginObserver)
-                .DisposedBy(_compositeDisposable);
+            _viewModel.LoginSuccessful.Subscribe(loginObserver).DisposedBy(_compositeDisposable);
         }
 
         private void GotoMain()
