@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>RxCocoa</id>
+        <version>1.0.1</version>
+        <authors>niilohlin</authors>
+        <owners>niilohlin</owners>
+        <licenseUrl>https://raw.githubusercontent.com/niilohlin/RxiOS/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/niilohlin/RxiOS</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>A partial port of RxCocoa to work with Xamarin.</description>
+        <releaseNotes>The most common extensions ported.</releaseNotes>
+        <copyright>Copyright 2017</copyright>
+        <dependencies>
+            <dependency id="System.Reactive" version="3.1.1" />
+            <dependency id="System.Reactive.Core" version="3.1.1" />
+            <dependency id="System.Reactive.Interfaces" version="3.1.1" />
+            <dependency id="System.Reactive.Linq" version="3.1.1" />
+            <dependency id="System.Reactive.PlatformServices" version="3.1.1" />
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="bin\Debug\RxiOS.dll" target="lib\xamarinios\RxiOS.dll" />
+        <file src="bin\Debug\RxiOS.pdb" target="lib\xamarinios\RxiOS.pdb" />
+    </files>
+</package>

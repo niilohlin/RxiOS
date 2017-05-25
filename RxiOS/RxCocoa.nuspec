@@ -16,6 +16,7 @@
     </dependencies>
   </metadata>
   <files>
-	  <file src="RxiOS\bin\Debug\RxiOS.???" target="lib/Xamarin.iOS10"/>
+	  <file src="bin\Debug\RxiOS.???" target="lib/Xamarin.iOS10"/>
+	  <!-- <file src="RxiOS\RxCocoa.csproj" target="lib/Xamarin.iOS10"/> -->
   </files>
   </package>
