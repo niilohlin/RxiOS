@@ -76,6 +76,8 @@ namespace RxiOSExample
         private void AddBindings()
         {
             _viewModel = new LoginViewModel(_usernameTextField.Rx().Text(), _passwordTextField.Rx().Text(), _loginButton.Rx().Tap().Select(button => Unit.Default));
+            var b = new UILabel();
+            
             _viewModel.LoginButtonTitle.BindTo(_loginButton.Rx().Title(UIControlState.Normal)).DisposedBy(_compositeDisposable);
             _viewModel.LoginButtonEnabled.BindTo(_loginButton.Rx().Enabled()).DisposedBy(_compositeDisposable);
             _viewModel.ActivityIndicatorViewShowing.BindTo(_activityIndicatorView.Rx().Animating()).DisposedBy(_compositeDisposable);
