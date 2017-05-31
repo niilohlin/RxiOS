@@ -84,6 +84,13 @@ namespace UIKit.Reactive
 
     public static class RxUIControl
     {
+        /// <summary>
+        /// Returns An <c>IOBservable<T></c> instance for T when the <c>UIControlEvent is generated</c>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="rx"></param>
+        /// <param name="controlEvent"></param>
+        /// <returns>An <c>IOBservable</c> instance for <c>T</c> when the <c>UIControlEvent</c> is generated</returns>
         public static ControlEvent<T> ControlEvent<T>(this Reactive<T> rx, UIControlEvent controlEvent) where T: UIControl
         {
             var source = Observable.Create<T>(observer =>

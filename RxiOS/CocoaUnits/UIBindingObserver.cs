@@ -7,8 +7,8 @@ namespace UIKit.Reactive.CocoaUnits
 {
     public sealed class UIBindingObserver<TUIElement, TValue>: IObserver<TValue>
     {
-        private TUIElement _uiElement;
-        private Action<TUIElement, TValue> _binding;
+        private readonly TUIElement _uiElement;
+        private readonly Action<TUIElement, TValue> _binding;
 
         public UIBindingObserver(TUIElement uiElement, Action<TUIElement, TValue> binding)
         {
