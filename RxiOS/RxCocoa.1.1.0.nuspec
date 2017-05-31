@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>RxCocoa</id>
-        <version>1.0.2</version>
+        <version>1.1.0</version>
         <authors>niilohlin</authors>
         <owners>niilohlin</owners>
         <licenseUrl>https://raw.githubusercontent.com/niilohlin/RxiOS/master/LICENSE</licenseUrl>

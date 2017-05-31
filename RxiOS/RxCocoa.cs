@@ -107,10 +107,22 @@ namespace UIKit.Reactive
             return new ControlEvent<T>(source);
         }
 
+        /// <summary>
+        /// Observers a <c>bool</c> that sets the UIControl to <c>Enabled</c>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="rx"></param>
+        /// <param name="controlEvent"></param>
         public static UIBindingObserver<T, bool> Enabled<T>(this Reactive<T> rx)
             where T : UIControl => 
             new UIBindingObserver<T, bool>(rx.Parent, (control, b) => control.Enabled = b);
 
+        /// <summary>
+        /// Observers a <c>bool</c> that sets the UIControl to <c>Selected</c>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="rx"></param>
+        /// <param name="controlEvent"></param>
         public static UIBindingObserver<T, bool> Selected<T>(this Reactive<T> rx)
             where T : UIControl => 
             new UIBindingObserver<T, bool>(rx.Parent, (control, b) => control.Selected = b);
@@ -141,14 +153,38 @@ namespace UIKit.Reactive
             var bindingObserver = new UIBindingObserver<C, T>(control, setter);
             return new ControlProperty<T>(source, bindingObserver);
         }
-
-
     }
 
     public static class RxUITextField
     {
+        /// <summary>
+        /// Control property for the <c>Text</c> on the UITextField.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="rx"></param>
+        /// <example>
+        /// <code>
+        ///     Observable.Return("")
+        ///         .BindTo(textField.Rx().Text())
+        ///         .DisposedBy(disposable);
+        /// </code>
+        /// </example>
+        /// <example>
+        /// <code>
+        ///     textField.Rx().Text()
+        ///         .Subscribe(Console.WriteLine)
+        ///         .DisposedBy(disposable);
+        /// </code>
+        /// </example>
+        /// <returns></returns>
         public static ControlProperty<string> Text<T>(this Reactive<T> rx) where T : UITextField => rx.Value();
 
+        /// <summary>
+        /// Another name for <c>textField.Rx().Text()</c>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="rx"></param>
+        /// <returns></returns>
         public static ControlProperty<string> Value<T>(this Reactive<T> rx) where T : UITextField
         {
             return RxUIControl.Value(rx.Parent, textFied => textFied.Text, (textField, text) =>
@@ -163,6 +199,12 @@ namespace UIKit.Reactive
 
     public static class RxUIApplication
     {
+        /// <summary>
+        /// Binding observer for <c>application.NetworkActivityIndicatorVisible</c>>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="rx"></param>
+        /// <returns></returns>
         public static UIBindingObserver<T, bool> NetworkActivityIndicatorVisible<T>(this Reactive<T> rx)
             where T : UIApplication => 
             new UIBindingObserver<T, bool>(rx.Parent, (application, b) => application.NetworkActivityIndicatorVisible = b);
@@ -170,8 +212,31 @@ namespace UIKit.Reactive
 
     public static class RxUIView
     {
+        /// <summary>
+        /// Binding observer for <c>view.Hidden</c>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="rx"></param>
+        /// <returns></returns>
+        /// <example>
+        /// <code>
+        ///     Observable.Return(false).BindTo(view.Rx().Hidden()).DisposedBy(disposable);
+        /// </code>
+        /// </example>
         public static UIBindingObserver<T, bool> Hidden<T>(this Reactive<T> rx) where T: UIView => 
             new UIBindingObserver<T, bool>(rx.Parent, (view, b) => view.Hidden = b);
+
+        /// <summary>
+        /// Binding observer for <c>view.Alpha</c>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="rx"></param>
+        /// <returns></returns>
+        /// <example>
+        /// <code>
+        ///     Observable.Return(0.5).BindTo(view.Rx().Alpha()).DisposedBy(disposable);
+        /// </code>
+        /// </example>
 
         public static UIBindingObserver<T, float> Alpha<T>(this Reactive<T> rx) where T: UIView => 
             new UIBindingObserver<T, float>(rx.Parent, (view, f) => view.Alpha = f);
@@ -179,6 +244,17 @@ namespace UIKit.Reactive
 
     public static class RxUIActivityIndicatorView
     {
+        /// <summary>
+        /// Binding Observer for UIActivityIndicatorView.StartAnimating and UIActivityIndicatorView.StopAnimating
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="rx"></param>
+        /// <returns></returns>
+        /// <example>
+        /// <code>
+        ///     Observable.Return(true).BindTo(activityIndicator.Rx().Animating()).DisposedBy(disposable);
+        /// </code>
+        /// </example>
         public static UIBindingObserver<T, bool> Animating<T>(this Reactive<T> rx) where T : UIActivityIndicatorView
         {
             return new UIBindingObserver<T, bool>(rx.Parent, (activity, b) =>
@@ -196,6 +272,17 @@ namespace UIKit.Reactive
     }
     public static class RxUIRefreshControl
     {
+        /// <summary>
+        /// Binding Observer for UIRefeshControl.BeginRefreshing and UIRefeshControl.EndRefreshing
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="rx"></param>
+        /// <returns></returns>
+        /// <example>
+        /// <code>
+        ///     Observable.Return(true).BindTo(refreshControl.Rx().Refreshing()).DisposedBy(disposable);
+        /// </code>
+        /// </example>
         public static UIBindingObserver<T, bool> Refreshing<T>(this Reactive<T> rx) where T : UIRefreshControl
         {
             return new UIBindingObserver<T, bool>(rx.Parent, (refresh, b) =>
@@ -211,27 +298,86 @@ namespace UIKit.Reactive
             });
         }
 
+        /// <summary>
+        /// ControlEvent for UIRefreshControl -> ValueChanged
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="rx"></param>
+        /// <returns></returns>
+        /// <example>
+        /// <code>
+        ///     refreshControl.Rx().Refresh()
+        ///         .Subscribe(r => Console.WriteLine("refresh control changed"))
+        ///         .DisposedBy(disposable);
+        /// </code>
+        /// </example>
         public static ControlEvent<T> Refresh<T>(this Reactive<T> rx) where T : UIRefreshControl => 
             rx.ControlEvent(UIControlEvent.ValueChanged);
     }
 
     public static class RxUIViewController
     {
+        /// Binding for <c>Title</c> property on <c>UIViewController</c>
+        /// </summary>
+        /// <typeparam name="T">T is UIButton</typeparam>
+        /// <param name="rx"></param>
+        /// <example>
+        ///     <code>
+        ///         Observable.Return("Title")
+        ///             .BindTo(viewController.Rx().Title())
+        ///             .DisposedBy(disposable);
+        ///     </code>
+        /// </example>
+        /// <returns></returns>
         public static UIBindingObserver<T, string> Title<T>(this Reactive<T> rx) where T : UIViewController => 
             new UIBindingObserver<T, string>(rx.Parent, (vc, s) => vc.Title = s);
     }
 
     public static class RxUIAlertAction
     {
+        /// <summary>
+        /// Binding for UIAlertAction.AlertActionEnabled
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="rx"></param>
+        /// <returns></returns>
         public static UIBindingObserver<T, bool> AlertActionEnabled<T>(this Reactive<T> rx) where T : UIAlertAction => 
             new UIBindingObserver<T, bool>(rx.Parent, (aa, b) => aa.Enabled = b);
     }
 
     public static class RxUISegmentedControl
     {
+        /// <summary>
+        /// ControlProperty for <c>UISegmentedControl.SelectedSegment</c>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="rx"></param>
+        /// <returns></returns>
+        /// <example>
+        /// <code>
+        ///     Observable.Return(0)
+        ///         .BindTo(segmentedControl.Rx().SelectedSegment())
+        ///         .DisposedBy(disposable);
+        /// </code>
+        /// </example>
+        /// <example>
+        /// <code>
+        ///     segmentedControl.Rx().SelectedSegment()
+        ///         .Subscribe(i => Console.WriteLine(i.ToString))
+        ///         .DisposedBy(disposable);
+        /// </code>
+        /// </example>
+        /// <returns></returns>
         public static ControlProperty<nint> SelectedSegment<T>(this Reactive<T> rx) where T : UISegmentedControl 
             => rx.SegValue();
 
+        /// <summary>
+        /// Same as <c>SelectedSegment</c>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="rx"></param>
+        /// <returns></returns>
+        /// <seealso cref="SelectedSegment{T}"/>
         public static ControlProperty<nint> SegValue<T>(this Reactive<T> rx) where T : UISegmentedControl 
             => RxUIControl.Value(rx.Parent, seg => seg.SelectedSegment,
                 (seg, segIndex) => seg.SelectedSegment = segIndex);
@@ -239,27 +385,50 @@ namespace UIKit.Reactive
 
     public static class IObservableExtensions
     {
+        /// <summary>
+        /// Print <c>label</c> for every event in the observable
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obs"></param>
+        /// <param name="label">The label to be printed.</param>
+        /// <returns></returns>
         public static IObservable<T> Debug<T>(this IObservable<T> obs, string label)
         {
             return obs.Do(
-                o =>
-                {
-                    Console.WriteLine("{0} Next: {1}", label, o);
-                },
-                e =>
-                {
-                    Console.WriteLine("{0} Error: {1}", label, e);
-                },
-                () =>
-                {
-                    Console.WriteLine("{0} Completed", label);
-                }
+                o => Console.WriteLine("{0} Next: {1}", label, o) ,
+                e => Console.WriteLine("{0} Error: {1}", label, e) ,
+                () => Console.WriteLine("{0} Completed", label)
             );
         }
 
+        /// <summary>
+        /// <c>SelectFirst</c> is the same as <c>SwitchMap</c> in other Rx implementations.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="G"></typeparam>
+        /// <param name="observable"></param>
+        /// <param name="selector"></param>
+        /// <returns></returns>
+        /// <example>
+        /// <code>
+        /// new List<string>{"google.com", "bing.com", "yahoo.com"}
+        ///     .ToObservable()
+        ///     .SelectFirst(site => Search("my search query", site))
+        ///     .Subscribe(searchResult => Consol.WriteLine("got only from the fastest " + searchResult))
+        ///     .DisposedBy(disposable);
+        /// </code>
+        /// </example>
+        /// <seealso cref="IObservable{T}.SelectMany"/>>
         public static IObservable<G> SelectFirst<T, G>(this IObservable<T> observable, Func<T, IObservable<G>> selector) 
             => observable.Select(selector).Switch();
 
+        /// <summary>
+        /// Alias for <c>Subscribe</c>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="observable"></param>
+        /// <param name="observer"></param>
+        /// <returns></returns>
         public static IDisposable BindTo<T>(this IObservable<T> observable, IObserver<T> observer) 
             => observable.Subscribe(observer);
 
@@ -284,6 +453,11 @@ namespace UIKit.Reactive
 
     public static class DisposableExtensions
     {
+        /// <summary>
+        /// Alias for <c>CompositeDisposable.Add</c>
+        /// </summary>
+        /// <param name="disposable"></param>
+        /// <param name="compositeDisposable"></param>
         public static void DisposedBy(this IDisposable disposable, CompositeDisposable compositeDisposable) 
             => compositeDisposable.Add(disposable);
     }
