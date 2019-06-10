@@ -4,6 +4,7 @@ using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using ReactiveUI;
 using CoreFoundation;
 using Foundation;
 using UIKit.Reactive.CocoaUnits;
